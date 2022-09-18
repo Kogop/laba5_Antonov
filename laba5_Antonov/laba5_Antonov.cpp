@@ -55,7 +55,7 @@ void Matrix_Peremnoj_na_vector(double(&AA)[n][m], double(&vv)[n]) {
 
 
 void Zapis_v_File() {
-	ofstream File1("/home/vc/18VF1/laba2-master/laba2_try3/Matrix_1.txt");
+	ofstream File1("Matrix_1.txt");
 	for (int i = 0; i < n; i++)
 	{
 		for (int j = 0; j < m; j++) {
@@ -65,7 +65,7 @@ void Zapis_v_File() {
 	}
 	File1.close();
 
-	ofstream File2("/home/vc/18VF1/laba2-master/laba2_try3/Matrix_2.txt");
+	ofstream File2("Matrix_2.txt");
 	for (int i = 0; i < m; i++)
 	{
 		for (int j = 0; j < n; j++) {
@@ -75,7 +75,7 @@ void Zapis_v_File() {
 	}
 	File2.close();
 
-	ofstream File4("/home/vc/18VF1/laba2-master/laba2_try3/Vector_1.txt");
+	ofstream File4("Vector_1.txt");
 	for (int i = 0; i < n; i++)
 	{
 		File4 << v[i] << endl;
@@ -84,7 +84,7 @@ void Zapis_v_File() {
 }
 
 void Zapix_otvetov_v_File(double(&CC)[n][n]/*,double(&d)[n]*/) {
-	ofstream File3("/home/vc/18VF1/laba2-master/laba2_try3/Matrix_Otvet1.txt");
+	ofstream File3("Matrix_Otvet1.txt");
 	for (int i = 0; i < n; i++)
 	{
 		for (int j = 0; j < n; j++) {
@@ -111,7 +111,7 @@ void Zapix_otvetov_v_File(double(&CC)[n][n]/*,double(&d)[n]*/) {
 }
 
 void read_Vector() {
-	ifstream File5("/home/vc/18VF1/laba2-master/laba2_try3/Vector_1.txt");
+	ifstream File5("Vector_1.txt");
 	for (int i = 0; i < n; i++) {
 		File5 >> v1[i];
 		//  cout << DD[i]<<endl;
@@ -120,7 +120,7 @@ void read_Vector() {
 }
 
 void read_Matrix() {
-	ifstream File1("/home/vc/18VF1/laba2-master/laba2_try3/Matrix_1.txt");
+	ifstream File1("Matrix_1.txt");
 	for (int i = 0; i < n; i++)
 	{
 		for (int j = 0; j < m; j++) {
@@ -131,7 +131,7 @@ void read_Matrix() {
 	}
 	File1.close();
 
-	ifstream File2("/home/vc/18VF1/laba2-master/laba2_try3/Matrix_2.txt");
+	ifstream File2("Matrix_2.txt");
 	for (int i = 0; i < m; i++)
 	{
 		for (int j = 0; j < n; j++) {
@@ -179,7 +179,7 @@ int N = 0, M = 0, Nn = 0, Mm = 0, limit_1 = 0;
 //int kol_stolb_v_posled_stolb_bloke = 0;
 //bool is_n_menwe_size;
 
-
+double Temp_dlyua_sloj[n][m];
 
 
 
@@ -209,15 +209,16 @@ int main() {
 	double  rbufA[m], rbufB[m]; int gsize;
 	MPI_Comm_size(MPI_COMM_WORLD, &gsize);
 
-	MPI_Bcast(B1, n*m, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+	//MPI_Bcast(B1, n*m, MPI_DOUBLE, 0, MPI_COMM_WORLD);
     MPI_Scatter(A1, m, MPI_DOUBLE, rbufA, m, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+	MPI_Scatter(B1, m, MPI_DOUBLE, rbufB, m, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 	
 	double buff[1000];
-	MPI_Buffer_attach(&buff, n * m * sizeof(double));
+	//MPI_Buffer_attach(&buff, n * m * sizeof(double));
 	double buff2[1000];
-	MPI_Buffer_attach(&buff2, n * m * sizeof(double));
-
-
+	//MPI_Buffer_attach(&buff2, n * m * sizeof(double));
+	
+	// проверка работы русского языка
 
 	for (int i = 0; i < 4; i++) {
 		//double kk[m],kkk[m];
@@ -228,6 +229,7 @@ int main() {
 		cout << Temp[i] << " ";
 
 	}
+
 	cout << endl;
 	double rbuf[n * n];
 	MPI_Gather(&Temp[0], 4, MPI_DOUBLE, rbuf, 4, MPI_DOUBLE, 0, MPI_COMM_WORLD);
