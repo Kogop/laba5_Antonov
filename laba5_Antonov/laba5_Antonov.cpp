@@ -209,9 +209,9 @@ int main() {
 	double  rbufA[m], rbufB[m]; int gsize;
 	MPI_Comm_size(MPI_COMM_WORLD, &gsize);
 
-	//MPI_Bcast(B1, n*m, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+	MPI_Bcast(B1, n*m, MPI_DOUBLE, 0, MPI_COMM_WORLD);
     MPI_Scatter(A1, m, MPI_DOUBLE, rbufA, m, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-	MPI_Scatter(B1, m, MPI_DOUBLE, rbufB, m, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+	//MPI_Scatter(B1, m, MPI_DOUBLE, rbufB, m, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 	
 	double buff[1000];
 	//MPI_Buffer_attach(&buff, n * m * sizeof(double));
@@ -219,6 +219,15 @@ int main() {
 	//MPI_Buffer_attach(&buff2, n * m * sizeof(double));
 	
 	// проверка работы русского языка
+	/*  крч смотри, на каждом процессе есть нужная строка и вся матрица вторая, оно берет нужные строки и столбцы, 
+		надо просто с помощью редюса взять и перемножить строку на столбец, получится строка, её элементы надо
+		сложить, получится элемент искомой матрицы, надо только забить его местоположение сразу, чтобы поставить на нужное место
+		так что 
+		TODO:
+		1) написать функцию что будет складывать элементы полученной строки
+		2) записывать ответ в правильное место
+		
+		*/
 
 	for (int i = 0; i < 4; i++) {
 		//double kk[m],kkk[m];
