@@ -146,21 +146,22 @@ void read_Matrix() {
 double k[m];
 double l[m];
 
-void vzat_vector_iz_matrix(/*double(&AA)[n][m], int s1,*/ double(&BB)[m][n], int s2/*, int c*/) {
+void vzat_vector_iz_matrix(double(&AA)[n][m], int s1,/* double(&BB)[m][n], int s2,*/ int c) {
 	// if c == 1 znachit berem stroku if c== 2 znachit berem stolbec
 	// s eto nomer stroki ili stolbca kotoriy nuzhno vzat
 
-	//if(c==1){
-	//for (int j = 0; j < m; j++) {
-	//	k[j] = AA[s1][j];
-		//cout << k[j] << endl;
-	//}
-	 // }else if(c==2){
-	for (int j = 0; j < m; j++) {
-		l[j] = BB[j][s2];
-		//cout << l[j] << endl;
+	if (c == 1) {
+		for (int j = 0; j < m; j++) {
+			k[j] = AA[s1][j];
+			//cout << k[j] << endl;
+		}
 	}
-	//}
+	else if (c == 2) {
+		for (int j = 0; j < m; j++) {
+			l[j] = AA[j][s1];
+			//cout << l[j] << endl;
+		}
+	}
 
 }
 
@@ -179,7 +180,6 @@ int N = 0, M = 0, Nn = 0, Mm = 0, limit_1 = 0;
 //int kol_stolb_v_posled_stolb_bloke = 0;
 //bool is_n_menwe_size;
 
-double Temp_dlyua_sloj[n][m];
 
 
 
@@ -206,17 +206,42 @@ int main() {
 		read_Matrix();
 	}
 
-	double  rbufA[m], rbufB[m]; int gsize;
+	double  rbufA[m], rbufB[m]; int gsize; double buff[1000];
 	MPI_Comm_size(MPI_COMM_WORLD, &gsize);
+	MPI_Bcast(B1, n * m, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+	MPI_Bcast(A1, n * m, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
-	MPI_Bcast(B1, n*m, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-    MPI_Scatter(A1, m, MPI_DOUBLE, rbufA, m, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-	//MPI_Scatter(B1, m, MPI_DOUBLE, rbufB, m, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+	for (size_t i = 0; i < n; i++)
+	{
+		vzat_vector_iz_matrix(A1, i, 1);
+		MPI_Scatter(k, 1, MPI_DOUBLE, rbufA, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+		for (size_t j = 0; j < m; j++)
+		{
+			vzat_vector_iz_matrix(B1, j, 2);
+			MPI_Scatter(l, 1, MPI_DOUBLE, rbufB, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+			Temp[0] = rbufA[0] * rbufB[0];
+			cout << rbufA[0] << " " << rbufB[0] << " " << rank << endl;
+			MPI_Reduce(Temp, buff, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+			//cout << buff[0] << " " << rank << endl;
+			if (rank == 0)
+			{
+				cout << buff[0] << " " << rank << endl;
+				C[i][j] = buff[0];
+			}
+			
+			fflush(stdout);
+		}
+	}
+	if (rank == 0) {
+		Zapix_otvetov_v_File(C/*,d*/);
+	}
+
 	
-	double buff[1000];
-	//MPI_Buffer_attach(&buff, n * m * sizeof(double));
-	double buff2[1000];
-	//MPI_Buffer_attach(&buff2, n * m * sizeof(double));
+
+	
+	
+	
+	//double buff2[1000];
 	
 	// проверка работы русского языка
 	/*  скаттером через правильные форы отправляешь на все процессы по 1 элементу из строки и столбца
@@ -224,38 +249,38 @@ int main() {
 		только сохраняй результат умножения в новую переменную, чтобы не пересылать каждый раз заново строку	*/
 	// тут инфа поступила что походу можно свои фунции в редусе использовать, это сложно, хер пойми как делать, но + балл на экзе, не стоит того.
 
-	for (int i = 0; i < 4; i++) {
-		//double kk[m],kkk[m];
-		vzat_vector_iz_matrix(B1, i);
-		//cout <<rbufB[i]<<endl;
-		Temp[i] = peremnoj_vector_na_vector(rbufA, l);
+	//for (int i = 0; i < 4; i++) {
+	//	//double kk[m],kkk[m];
+	//	vzat_vector_iz_matrix(B1, i);
+	//	//cout <<rbufB[i]<<endl;
+	//	Temp[i] = peremnoj_vector_na_vector(rbufA, l);
 
-		cout << Temp[i] << " ";
+	//	cout << Temp[i] << " ";
 
-	}
+	//}
 
-	cout << endl;
-	double rbuf[n * n];
-	MPI_Gather(&Temp[0], 4, MPI_DOUBLE, rbuf, 4, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-	if (rank == 0) {
+	//cout << endl;
+	//double rbuf[n * n];
+	//MPI_Gather(&Temp[0], 4, MPI_DOUBLE, rbuf, 4, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+	//if (rank == 0) {
 
-		//cout <<"joparabotai"<< 228<<endl;
-		int g = 0;
-		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < n; j++) {
+	//	//cout <<"joparabotai"<< 228<<endl;
+	//	int g = 0;
+	//	for (int i = 0; i < n; i++) {
+	//		for (int j = 0; j < n; j++) {
 
-				cout << rbuf[g] << endl;
+	//			cout << rbuf[g] << endl;
 
-				C[i][j] = rbuf[g];
+	//			C[i][j] = rbuf[g];
 
-				fflush(stdout);
-				g++;
-			}
+	//			fflush(stdout);
+	//			g++;
+	//		}
 
-		}
-		Zapix_otvetov_v_File(C/*,d*/);
+	//	}
+	//	Zapix_otvetov_v_File(C/*,d*/);
 
-	}
+	//}
 
 
 
