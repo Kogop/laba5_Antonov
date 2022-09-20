@@ -55,7 +55,7 @@ void Matrix_Peremnoj_na_vector(double(&AA)[n][m], double(&vv)[n]) {
 
 
 void Zapis_v_File() {
-	ofstream File1("Matrix_1.txt");
+	ofstream File1("C:/Users/neste/source/Repos/laba5_Antonov/Matrix_1.txt");
 	for (int i = 0; i < n; i++)
 	{
 		for (int j = 0; j < m; j++) {
@@ -65,7 +65,7 @@ void Zapis_v_File() {
 	}
 	File1.close();
 
-	ofstream File2("Matrix_2.txt");
+	ofstream File2("C:/Users/neste/source/Repos/laba5_Antonov/Matrix_2.txt");
 	for (int i = 0; i < m; i++)
 	{
 		for (int j = 0; j < n; j++) {
@@ -75,7 +75,7 @@ void Zapis_v_File() {
 	}
 	File2.close();
 
-	ofstream File4("Vector_1.txt");
+	ofstream File4("C:/Users/neste/source/Repos/laba5_Antonov/Vector_1.txt");
 	for (int i = 0; i < n; i++)
 	{
 		File4 << v[i] << endl;
@@ -84,7 +84,7 @@ void Zapis_v_File() {
 }
 
 void Zapix_otvetov_v_File(double(&CC)[n][n]/*,double(&d)[n]*/) {
-	ofstream File3("Matrix_Otvet1.txt");
+	ofstream File3("C:/Users/neste/source/Repos/laba5_Antonov/Matrix_Otvet1.txt");
 	for (int i = 0; i < n; i++)
 	{
 		for (int j = 0; j < n; j++) {
@@ -111,7 +111,7 @@ void Zapix_otvetov_v_File(double(&CC)[n][n]/*,double(&d)[n]*/) {
 }
 
 void read_Vector() {
-	ifstream File5("Vector_1.txt");
+	ifstream File5("C:/Users/neste/source/Repos/laba5_Antonov/Vector_1.txt");
 	for (int i = 0; i < n; i++) {
 		File5 >> v1[i];
 		//  cout << DD[i]<<endl;
@@ -120,7 +120,7 @@ void read_Vector() {
 }
 
 void read_Matrix() {
-	ifstream File1("Matrix_1.txt");
+	ifstream File1("C:/Users/neste/source/Repos/laba5_Antonov/Matrix_1.txt");
 	for (int i = 0; i < n; i++)
 	{
 		for (int j = 0; j < m; j++) {
@@ -131,7 +131,7 @@ void read_Matrix() {
 	}
 	File1.close();
 
-	ifstream File2("Matrix_2.txt");
+	ifstream File2("C:/Users/neste/source/Repos/laba5_Antonov/Matrix_2.txt");
 	for (int i = 0; i < m; i++)
 	{
 		for (int j = 0; j < n; j++) {
@@ -235,61 +235,6 @@ int main() {
 	if (rank == 0) {
 		Zapix_otvetov_v_File(C/*,d*/);
 	}
-
-	
-
-	
-	
-	
-	//double buff2[1000];
-	
-	// проверка работы русского языка
-	/*  скаттером через правильные форы отправляешь на все процессы по 1 элементу из строки и столбца
-		там их сразу перемножаешь, а потом редьюсом суммируешь, на выходе в 0 процессе получаешь элемент искомой матрицы
-		только сохраняй результат умножения в новую переменную, чтобы не пересылать каждый раз заново строку	*/
-	// тут инфа поступила что походу можно свои фунции в редусе использовать, это сложно, хер пойми как делать, но + балл на экзе, не стоит того.
-
-	//for (int i = 0; i < 4; i++) {
-	//	//double kk[m],kkk[m];
-	//	vzat_vector_iz_matrix(B1, i);
-	//	//cout <<rbufB[i]<<endl;
-	//	Temp[i] = peremnoj_vector_na_vector(rbufA, l);
-
-	//	cout << Temp[i] << " ";
-
-	//}
-
-	//cout << endl;
-	//double rbuf[n * n];
-	//MPI_Gather(&Temp[0], 4, MPI_DOUBLE, rbuf, 4, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-	//if (rank == 0) {
-
-	//	//cout <<"joparabotai"<< 228<<endl;
-	//	int g = 0;
-	//	for (int i = 0; i < n; i++) {
-	//		for (int j = 0; j < n; j++) {
-
-	//			cout << rbuf[g] << endl;
-
-	//			C[i][j] = rbuf[g];
-
-	//			fflush(stdout);
-	//			g++;
-	//		}
-
-	//	}
-	//	Zapix_otvetov_v_File(C/*,d*/);
-
-	//}
-
-
-
-
-
-
-
-
-	
 
 	endtime = MPI_Wtime();
 	printf("vipolnenie zanyalo %f seconds\n", endtime - starttime);
